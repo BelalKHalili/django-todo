@@ -1,104 +1,100 @@
-// main_url = 'http://127.0.0.1:8000/todo/'
-main_url = 'http://192.168.1.103:8000/todo/'
+main_url = 'http://127.0.0.1:8000/todo/'
+// main_url = 'http://192.168.1.103:8000/todo/'
+
 var save_button = document.querySelector('#save-button')
 
+
+// ----------------------------------------------------------------------------------
 // Delete To-Do
 function deleteTask(itemId) {
   // TODO: how to make fetch send delete request
   fetch(`${main_url}delete/${itemId}`)
-  .then(res => res.json())
-  .then(data => {
+    .then(res => res.json())
+    .then(data => {
       var card = document.querySelector(`#card${data['data']}`)
       card.remove()
       // cancelTask()
-  })
+    })
 }
 
 
-
+// ----------------------------------------------------------------------------------
+// Edit task
 function editTask(itemId) {
   fetch(`${main_url}edit/${itemId}`)
-  .then(res => res.json())
-  .then(data => {
-    // putting values to form and changing color and editstate of save button
-    // !!! edit state somethign that after clicking edit buttons save button functionality is gonna change but the elemnt is staying still
+    .then(res => res.json())
+    .then(data => {
+      // putting values to form and changing color and editstate of save button
+      // !!! edit state somethign that after clicking edit buttons save button functionality is gonna change but the elemnt is staying still
 
-    let title = document.getElementById('title');
-    let description = document.getElementById('description');
-    title.value = data['title']
-    description.value = data['description']
-    document.querySelector('#save-button').classList.replace('btn-success', 'btn-primary')
-    save_button.dataset.editstate = 'true' 
-    
-    // making cancel button if it not already exist
-    if (!document.querySelector('.btn-secondary')) {
-      let formTask = document.querySelector('#form-Task')
-      let cancelButton = document.createElement('button')
-      let cancelText = document.createTextNode('Cancel')
-      cancelButton.appendChild(cancelText)
-      cancelButton.setAttribute('id', 'cancel-button')
-      cancelButton.setAttribute('onclick', 'cancelTask()')
-      cancelButton.classList.add('btn', 'btn-secondary', 'btn-block')
-      formTask.appendChild(cancelButton)
-    }
+      let title = document.getElementById('title');
+      let description = document.getElementById('description');
+      title.value = data['title']
+      description.value = data['description']
+      document.querySelector('#save-button').classList.replace('btn-success', 'btn-primary')
+      save_button.dataset.editstate = 'true'
 
-    if (save_button.dataset.editstate == 'true') {
-      save_button.onclick = function() {
-        // taking data from forms before the save button is clicked
-        postdata = {
-          'id': itemId,
-          'title': title.value,
-          'description': description.value
-        }
-        let csrftoken = getCookie('csrftoken')
-
-        // sending data to backend
-        fetch(`${main_url}edit/${itemId}`, {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify(postdata)
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data)
-          // make the changes in display
-          document.querySelector(`#title-${data['id']}`).innerHTML = data['title']
-          document.querySelector(`#description-${data['id']}`).innerHTML = data['description']
-          // reseting form for later use
-          document.querySelector('#save-button').classList.replace('btn-primary', 'btn-success')
-          document.querySelector('#cancel-button').remove()
-          document.getElementById('form-Task').reset()   
-        })
+      // making cancel button if it not already exist
+      if (!document.querySelector('.btn-secondary')) {
+        let formTask = document.querySelector('#form-Task')
+        let cancelButton = document.createElement('button')
+        let cancelText = document.createTextNode('Cancel')
+        cancelButton.appendChild(cancelText)
+        cancelButton.setAttribute('id', 'cancel-button')
+        cancelButton.setAttribute('onclick', 'cancelTask()')
+        cancelButton.classList.add('btn', 'btn-secondary', 'btn-block')
+        formTask.appendChild(cancelButton)
       }
-    }
-    save_button.dataset.editstate = 'false'
 
-  })
+      if (save_button.dataset.editstate == 'true') {
+        save_button.onclick = function () {
+          // taking data from forms before the save button is clicked
+          postdata = {
+            'id': itemId,
+            'title': title.value,
+            'description': description.value
+          }
+          let csrftoken = getCookie('csrftoken')
+
+          // sending data to backend
+          fetch(`${main_url}edit/${itemId}`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+              },
+              body: JSON.stringify(postdata)
+            })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+              // make the changes in display
+              document.querySelector(`#title-${data['id']}`).innerHTML = data['title']
+              document.querySelector(`#description-${data['id']}`).innerHTML = data['description']
+              // reseting form for later use
+              document.querySelector('#save-button').classList.replace('btn-primary', 'btn-success')
+              document.querySelector('#cancel-button').remove()
+              document.getElementById('form-Task').reset()
+            })
+        }
+      }
+      save_button.dataset.editstate = 'false'
+    })
 }
 
 
-
-
-
-
+// ----------------------------------------------------------------------------------
 function cancelTask() {
   document.querySelector('#cancel-button').remove()
   document.querySelector('#save-button').classList.replace('btn-primary', 'btn-success')
-  document.getElementById('form-Task').reset();
+  document.getElementById('form-Task').reset()
   document.querySelector('#title').focus()
 }
 
 
-
-
-
-
-// i think this is not gonna work at start of program or page loadin
-save_button.onclick = function() {
+// ----------------------------------------------------------------------------------
+save_button.onclick = function () {
   if (save_button.dataset.editstate == 'false') {
     saveTask()
   }
@@ -111,25 +107,25 @@ function saveTask() {
   data = {
     'title': title,
     'description': description
-  } 
+  }
 
   let csrftoken = getCookie('csrftoken')
   fetch(`${main_url}add/`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
       },
       body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(data => {
+    })
+    .then(res => res.json())
+    .then(data => {
       console.log(data)
-        
+
       // make a new list item based on returnd data from API data
       var item1 = document.querySelector('.col-md-8')
-      
+
       item1.innerHTML += `
       <div class="card mb-3" id="card${data['id']}">
       <div class="card-body">
@@ -158,19 +154,21 @@ function saveTask() {
 
 }
 
+
+// ----------------------------------------------------------------------------------
 // Working with cookie
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-          }
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
+    }
   }
   return cookieValue;
 }
