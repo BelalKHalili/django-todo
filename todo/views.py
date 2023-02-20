@@ -31,8 +31,7 @@ def edit_todo(request, taskid):
         taskedi = Todo.objects.get(id=taskid)
 
         # update data
-        taskedi.title = jsondata['title']
-        taskedi.description = jsondata['description']
+        taskedi.task = jsondata['task']
         taskedi.save()
         # return data
         return JsonResponse(TodoSerializers(taskedi).data)

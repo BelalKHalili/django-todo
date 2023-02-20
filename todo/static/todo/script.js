@@ -27,10 +27,8 @@ function editTask(itemId) {
       // putting values to form and changing color and editstate of save button
       // !!! edit state somethign that after clicking edit buttons save button functionality is gonna change but the elemnt is staying still
 
-      let title = document.getElementById('title');
-      let description = document.getElementById('description');
-      title.value = data['title']
-      description.value = data['description']
+      let todotext = document.getElementById('todotext');
+      todotext.value = data['task']
       document.querySelector('#save-button').classList.replace('btn-success', 'btn-primary')
       save_button.dataset.editstate = 'true'
 
@@ -51,8 +49,7 @@ function editTask(itemId) {
           // taking data from forms before the save button is clicked
           postdata = {
             'id': itemId,
-            'title': title.value,
-            'description': description.value
+            'task': todotext.value
           }
           let csrftoken = getCookie('csrftoken')
 
@@ -70,8 +67,7 @@ function editTask(itemId) {
             .then(data => {
               console.log(data)
               // make the changes in display
-              document.querySelector(`#title-${data['id']}`).innerHTML = data['title']
-              document.querySelector(`#description-${data['id']}`).innerHTML = data['description']
+              // document.querySelector(`#todotext-${data['id']}`).innerHTML = data['task']
               // reseting form for later use
               document.querySelector('#save-button').classList.replace('btn-primary', 'btn-success')
               document.querySelector('#cancel-button').remove()
@@ -89,7 +85,7 @@ function cancelTask() {
   document.querySelector('#cancel-button').remove()
   document.querySelector('#save-button').classList.replace('btn-primary', 'btn-success')
   document.getElementById('form-Task').reset()
-  document.querySelector('#title').focus()
+  document.querySelector('#todotext').focus()
 }
 
 
@@ -102,11 +98,10 @@ save_button.onclick = function () {
 
 // Save new To-Do
 function saveTask() {
-  let title = document.getElementById('title').value;
-  let description = document.getElementById('description').value;
+  let todotext = document.getElementById('todotext').value;
   data = {
-    'title': title,
-    'description': description
+    'task': todotext,
+    'checked': 'False'
   }
 
   let csrftoken = getCookie('csrftoken')
@@ -131,10 +126,10 @@ function saveTask() {
       <div class="card-body">
           <div class="row">
               <div class="col-sm-3 text-left">
-                  <p style="text-align: center;" id="title-${data['id']}" class="fw-bold" >${data['title']}</p>
+                  <p style="text-align: center;" id="title-${data['id']}" class="fw-bold" >${data['task']}</p>
               </div>
               <div class="col-sm-7 text-left">
-                  <p style="text-align: center;" id="description-${data['id']}" >${data['description']}</p>
+                  <p style="text-align: center;" id="todotext-${data['id']}" >${data['task']}</p>
               </div>
               <div class="col-sm-1 text-right">
                 <a href="#" onclick="editTask('${data['id']}')" class="btn btn-info ml-5">Edit</a>
