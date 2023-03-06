@@ -1,7 +1,6 @@
 #custom
 notes/
-todo/templates/todo/index2.html
-todo/templates/todo/test.html
+todo/templates/todo/tutorial.html
 
 # DB
 backup-dbs/
