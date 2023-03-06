@@ -1,0 +1,64 @@
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Todo List</title>
+        <!-- Bootstrap-->
+        <link rel="stylesheet" href="{% static 'todo/css/bootstrap.css' %}">
+    </head>
+    
+    <body>
+        <nav style="background-color: black;" class="navbar">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'todo:home' %}" style="color: white;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-card-checklist" viewBox="0 2 17 17">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                        <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    Todo List
+                </a>
+              {% if user.is_authenticated %}
+              <h5 style="color: white;">Hello : {{ user.username }} | <a href="{% url 'todo:logout' %}">Logout</a></h5>
+              {% else %}
+              <h5 style="color: white;"><a href="{% url 'todo:login' %}">Login</a> | <a
+                  href="{% url 'todo:signup' %}">Signup</a></h5>
+              {% endif %}
+            </div>
+        </nav>
+          <br>
+    
+        <div class="container">
+            {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ error}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}  
+            <form action="{% url 'todo:signup' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="Enter your username" autocomplete="off" autocomplete="off" {%if username %} value="{{ username }}"{% endif %}>
+                </div>
+                <div class="form-group">
+                    <label for="emailaddress">Email address</label>
+                    <input class="form-control" type="email" id="emailaddress" name="email" placeholder="Enter your email" autocomplete="off" {%if email %} value="{{ email }}"{% endif %}>
+                </div>
+                <div class="form-group">
+                    <label for="userpassword1">Password</label>
+                    <input class="form-control" type="password" id="userpassword1" name="password1" placeholder="Enter your password" autocomplete="off" {%if username %} autofocus {% endif %}>
+                </div>
+                <div class="form-group">
+                    <label for="userpassword2">Confirm passowrd</label>
+                    <input class="form-control" type="password" id="userpassword2" name="password2" placeholder="Confirm your password" autocomplete="off">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary mt-3">Signup</button>
+                </div>
+            </form>
+            <a class="fw-bold" href="{% url 'todo:login' %}">have an account?</a><br>
+            <a href="{% url 'todo:home' %}">home page</a>
+        </div>
+        <script src="{% static 'todo/js/bootstrap.bundle.js' %}"></script>
+    </body>
+</html>
